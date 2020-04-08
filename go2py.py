@@ -7,11 +7,13 @@ import sys
 output = []
 
 if len(sys.argv) != 2:
-    print 'No input src file.'
+    print('No input src file.')
     sys.exit()
-src_name = sys.argv[1]
 
-with open(src_name) as f:
+src_path = sys.argv[1]
+src_home, src_name = os.path.split(sys.argv[1])
+
+with open(src_path) as f:
     for line in f:
         output.append(line)
 
@@ -21,9 +23,10 @@ for k,line in enumerate(output):
         break
 
 go_out = open('lib%s'%src_name,'wb+')
+
 src_pre = src_name.split('.')[0]
 py_out = open('%s.py'%src_pre,'wb+')
-py_out.write('''import ctypes\ncdll=ctypes.CDLL("./lib%s.so")\n'''%src_pre)
+py_out.write('''import ctypes\ncdll=ctypes.CDLL("./lib%s.so")\n'''%src_pre.encode())
 for line in output:
     func = utils.find_func(line)
     if func:
